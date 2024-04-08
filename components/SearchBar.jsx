@@ -6,54 +6,25 @@ export const SearchBar = ({ setResults }) => {
   const [showNoResultsMessage, setShowNoResultsMessage] = useState(false);
 
   const fetchData = (value) => {
-    if (navigator.onLine) {
-      fetch("https://api-cartilha-teste-production.up.railway.app/api/capitulos")
-      // fetch("https://tecnofam-strapi.cpao.embrapa.br/api/capitulos")
-        .then((response) => response.json())
-        .then((data) => {
-          const results = data.data.filter((capitulo) => {
-            return (
-              value &&
-              capitulo.attributes &&
-              capitulo.attributes.title &&
-              capitulo.attributes.title.toLowerCase().includes(value.toLowerCase())
-            );
-          });
-          setResults(results);
-          setShowNoResultsMessage(results.length === 0 && value.trim() !== ""); 
-        })
-        .catch((error) => {
-          console.error("Erro ao buscar dados:", error);
-          setResults([]);
-          setShowNoResultsMessage(true);
+    fetch("https://api-cartilha-teste-production.up.railway.app/api/capitulos")
+      .then((response) => response.json())
+      .then((data) => {
+        const results = data.data.filter((capitulo) => {
+          return (
+            value &&
+            capitulo.attributes &&
+            capitulo.attributes.title &&
+            capitulo.attributes.title.toLowerCase().includes(value.toLowerCase())
+          );
         });
-    } else {
-      // Aqui você pode implementar a lógica para buscar dados do cache quando estiver offline
-      // Por exemplo:
-      caches.open('api-capitulos-cache').then(cache => {
-        // cache.matchAll('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos').then(cachedResponses => {
-        cache.matchAll('https://api-cartilha-teste-production.up.railway.app/api/capitulos').then(cachedResponses => {
-
-          const cachedDataPromises = cachedResponses.map(cachedResponse => cachedResponse.json());
-          Promise.all(cachedDataPromises).then(cachedData => {
-            const results = cachedData.filter((capitulo) => {
-              return (
-                value &&
-                capitulo.attributes &&
-                capitulo.attributes.title &&
-                capitulo.attributes.title.toLowerCase().includes(value.toLowerCase())
-              );
-            });
-            setResults(results);
-            setShowNoResultsMessage(results.length === 0 && value.trim() !== ""); 
-          });
-        });
-      }).catch(error => {
-        console.error("Erro ao buscar dados em cache:", error);
+        setResults(results);
+        setShowNoResultsMessage(results.length === 0 && value.trim() !== ""); 
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar dados:", error);
         setResults([]);
         setShowNoResultsMessage(true);
       });
-    }
   };
 
   const handleChange = (value) => {
