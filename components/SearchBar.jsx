@@ -5,66 +5,54 @@ export const SearchBar = ({ setResults }) => {
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [showNoResultsMessage, setShowNoResultsMessage] = useState(false);
 
-  const fetchData = async (value) => {
-    try {
-      let results = [];
-      let showNoResults = true;
-
-      // Check if data is available in cache
-      const cache = await caches.open('api-capitulos-cache');
-      const cachedResponses = await cache.matchAll('https://api-cartilha-teste-production.up.railway.app/api/capitulos');
-      const cachedDataPromises = cachedResponses.map((cachedResponse) => cachedResponse.json());
-      const cachedData = await Promise.all(cachedDataPromises);
-
-      // Filter cached data
-      results = cachedData.filter((capitulo) => {
-        return (
-          value &&
-          capitulo.attributes &&
-          capitulo.attributes.title &&
-          capitulo.attributes.title.toLowerCase().includes(value.toLowerCase())
-        );
-      });
-
-      // If there are results in cache, show them
-      if (results.length > 0) {
-        showNoResults = false;
-        setResults(results);
-        setShowNoResultsMessage(false);
-      }
-
-      // Fetch data from API
-      if (navigator.onLine) {
-        const response = await fetch('https://api-cartilha-teste-production.up.railway.app/api/capitulos');
-        const data = await response.json();
-
-        // Filter API data
-        results = data.data.filter((capitulo) => {
-          return (
-            value &&
-            capitulo.attributes &&
-            capitulo.attributes.title &&
-            capitulo.attributes.title.toLowerCase().includes(value.toLowerCase())
-          );
-        });
-
-        // If there are results from API, show them
-        if (results.length > 0) {
-          showNoResults = false;
+  const fetchData = (value) => {
+    if (navigator.onLine) {
+      fetch("https://api-cartilha-teste-production.up.railway.app/api/capitulos")
+      // fetch("https://tecnofam-strapi.cpao.embrapa.br/api/capitulos")
+        .then((response) => response.json())
+        .then((data) => {
+          const results = data.data.filter((capitulo) => {
+            return (
+              value &&
+              capitulo.attributes &&
+              capitulo.attributes.title &&
+              capitulo.attributes.title.toLowerCase().includes(value.toLowerCase())
+            );
+          });
           setResults(results);
-          setShowNoResultsMessage(false);
-        }
-      }
+          setShowNoResultsMessage(results.length === 0 && value.trim() !== ""); 
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar dados:", error);
+          setResults([]);
+          setShowNoResultsMessage(true);
+        });
+    } else {
+      // Aqui você pode implementar a lógica para buscar dados do cache quando estiver offline
+      // Por exemplo:
+      caches.open('api-capitulos-cache').then(cache => {
+        // cache.matchAll('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos').then(cachedResponses => {
+        cache.matchAll('https://api-cartilha-teste-production.up.railway.app/api/capitulos').then(cachedResponses => {
 
-      // If no results found, show no results message
-      if (showNoResults) {
+          const cachedDataPromises = cachedResponses.map(cachedResponse => cachedResponse.json());
+          Promise.all(cachedDataPromises).then(cachedData => {
+            const results = cachedData.filter((capitulo) => {
+              return (
+                value &&
+                capitulo.attributes &&
+                capitulo.attributes.title &&
+                capitulo.attributes.title.toLowerCase().includes(value.toLowerCase())
+              );
+            });
+            setResults(results);
+            setShowNoResultsMessage(results.length === 0 && value.trim() !== ""); 
+          });
+        });
+      }).catch(error => {
+        console.error("Erro ao buscar dados em cache:", error);
         setResults([]);
         setShowNoResultsMessage(true);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setResults([]);
-      setShowNoResultsMessage(true);
+      });
     }
   };
 
