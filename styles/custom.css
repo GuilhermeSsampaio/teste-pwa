@@ -9,6 +9,170 @@ body {
     padding-right: 0 !important;
 }
 
+/* Beta CSS */
+.modal {
+    --mdb-modal-padding: 0 !important;
+}
+
+.btn-close-white,
+.btn-close-white:focus,
+.btn-close-white:hover {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+.vue-ribbon[data-v-b58a293a] {
+    width: 12.1em;
+    height: 12.1em;
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    pointer-events: none;
+    font-size: 13px;
+    text-decoration: none;
+    text-indent: -999999px
+}
+
+.vue-ribbon.fixed[data-v-b58a293a] {
+    position: fixed
+}
+
+#vue-ribbon-40:before {
+    background-color: #FB8C00;
+}
+
+.vue-ribbon[data-v-b58a293a]:active,.vue-ribbon[data-v-b58a293a]:hover {
+    background-color: transparent
+}
+
+.vue-ribbon[data-v-b58a293a]:after,.vue-ribbon[data-v-b58a293a]:before {
+    position: absolute;
+    display: block;
+    width: 10.8em;
+    height: 1.54em;
+    top: .9em;
+    right: -3.23em;
+    box-sizing: content-box;
+    transform: rotate(45deg)
+}
+
+.vue-ribbon[data-v-b58a293a]:before {
+    content: "";
+    padding: .38em 0;
+    background-image: linear-gradient(180deg,transparent,rgba(0,0,0,.15));
+    box-shadow: 0 .15em .23em 0 rgba(0,0,0,.5);
+    pointer-events: auto
+}
+
+.vue-ribbon[data-v-b58a293a]:after {
+    content: attr(data-ribbon);
+    color: #fff;
+    font: 700 1em Helvetica Neue,Helvetica,Arial,sans-serif;
+    line-height: 1.54em;
+    text-decoration: none;
+    text-align: center;
+    text-indent: 0;
+    padding: .15em 0;
+    margin: .15em 0;
+    border-width: .08em 0;
+    border-style: dotted;
+    border-color: #fff;
+    border-color: hsla(0,0%,100%,.7)
+}
+
+.vue-ribbon.left-bottom[data-v-b58a293a],.vue-ribbon.left-top[data-v-b58a293a] {
+    right: auto;
+    left: 0
+}
+
+.vue-ribbon.left-bottom[data-v-b58a293a],.vue-ribbon.right-bottom[data-v-b58a293a] {
+    top: auto;
+    bottom: 0
+}
+
+.vue-ribbon.left-bottom[data-v-b58a293a]:after,.vue-ribbon.left-bottom[data-v-b58a293a]:before,.vue-ribbon.left-top[data-v-b58a293a]:after,.vue-ribbon.left-top[data-v-b58a293a]:before {
+    right: auto;
+    left: -3.23em
+}
+
+.vue-ribbon.left-bottom[data-v-b58a293a]:after,.vue-ribbon.left-bottom[data-v-b58a293a]:before,.vue-ribbon.right-bottom[data-v-b58a293a]:after,.vue-ribbon.right-bottom[data-v-b58a293a]:before {
+    top: auto;
+    bottom: 3.23em
+}
+
+.vue-ribbon.left-top[data-v-b58a293a]:after,.vue-ribbon.left-top[data-v-b58a293a]:before,.vue-ribbon.right-bottom[data-v-b58a293a]:after,.vue-ribbon.right-bottom[data-v-b58a293a]:before {
+    transform: rotate(-45deg)
+}
+
+.modal-header {
+    background-color: #fb8c00;
+    color: #fff;
+}
+
+.v-card__text {
+    padding: 0 24px 20px;
+    color: rgba(0, 0, 0, .6);
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+    letter-spacing: .0071428571em;
+}
+
+.v-application p {
+    margin-bottom: 16px;
+}
+
+.v-dialog>.v-card>.v-card__actions {
+    padding: 8px 16px;
+}
+
+.v-application .pb-4 {
+    padding-bottom: 16px !important;
+}
+
+.v-application .justify-center {
+    justify-content: center !important;
+}
+
+.v-btn {
+    height: 44px;
+    min-width: 78px; 
+}
+
+.v-card__actions {
+    align-items: center;
+    display: flex;
+    padding: 8px;
+}
+
+.v-application .blue-grey.lighten-4 {
+    background-color: #cfd8dc !important;
+    border-color: #cfd8dc !important;
+}
+
+.v-application .headline {
+    line-height: 2rem !important;
+    font-size: 1.5rem !important;
+    font-weight: 400;
+    letter-spacing: normal !important;
+}
+
+.modal-dialog-scrollable::-webkit-scrollbar-thumb {
+    background-color: #f1f1f1;
+    border-radius: 4px;
+}
+
+.modal-dialog-scrollable::-webkit-scrollbar-track {
+    background-color: silver; 
+}
+
+.modal-dialog-scrollable {
+    scrollbar-color: silver #f8f9fa;
+}
+/* Fim Beta CSS */
+
 hr {
     display: none;
 }
