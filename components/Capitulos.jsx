@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Logo from '../public/logo.svg'
 import TextCapitulos from './TextCapitulos'
-import { SearchBar } from "./SearchBar.jsx";
-import { SearchResultsList } from "./SearchResultsList.jsx";
+import { SearchBar } from "./SearchBar.jsx"
+import { SearchResultsList } from "./SearchResultsList.jsx"
+import { Modal } from './Modal.jsx'
 
 export const Capitulos = () => {
     //Importação das Imagens
@@ -24,6 +25,11 @@ export const Capitulos = () => {
     const [data, setData] = useState([]);
     const [activeTitle, setActiveTitle] = useState(null);
     const [showSummary, setShowSummary] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleOpenModal = () => {
+        setShowModal(true);
+    };
 
     const handleTitleClick = (titleId) => {
         setActiveTitle(titleId);
@@ -164,8 +170,15 @@ export const Capitulos = () => {
                 <meta name="referrer" referrerPolicy="no-referrer" />
                 <title>Embrapa</title>
             </Head>
+            
+            {showModal && <Modal onClose={() => setShowModal(false)} />}
 
             {/* Div que Pega todo o Conteúdo da Página */}
+            {/* Beta */}
+                <div>
+                    <a data-v-b58a293a="" type='button' id="vue-ribbon-40" title="BETA" data-ribbon="BETA" class="vue-ribbon right-top" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={handleOpenModal}>BETA</a>
+                </div>
+            {/* Fim Beta */}
             <div className="container-wrapper">
                 {/* Código Sidebar */}
                 <nav id="sidebarMenu" className={`collapse d-lg-block sidebar bg-white thin-scrollbar ${isOffcanvasOpen ? 'show' : ''}`} tabIndex="-1">
