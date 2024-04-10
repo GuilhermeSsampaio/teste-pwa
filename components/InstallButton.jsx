@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 function InstallButton() {
-  const [showInstallButton, setShowInstallButton] = useState(false);
+  const [showInstallButton, setShowInstallButton] = useState(true); // Definido como true inicialmente
   const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   useEffect(() => {
-    const isInstallButtonVisible = localStorage.getItem('showInstallButton') === 'true';
-    setShowInstallButton(isInstallButtonVisible);
-
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowInstallButton(true);
-      localStorage.setItem('showInstallButton', 'true');
     });
 
     return () => {
@@ -33,7 +28,6 @@ function InstallButton() {
         }
         setDeferredPrompt(null);
         setShowInstallButton(false);
-        localStorage.removeItem('showInstallButton');
       });
     }
   };
