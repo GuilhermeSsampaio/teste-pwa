@@ -4,8 +4,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Logo from '../public/logo.svg'
 import InstallButton from './InstallButton'
-import { SearchBar } from "./SearchBar.jsx";
-import { SearchResultsList } from "./SearchResultsList.jsx";
+import { SearchBar } from "./SearchBar.jsx"
+import { SearchResultsList } from "./SearchResultsList.jsx"
+import { Modal } from './Modal.jsx'
 
 export const HomePage = () => {
     //Importação das Imagens
@@ -16,6 +17,11 @@ export const HomePage = () => {
     var Harley = require('../public/harley.png');   
 
     const [results, setResults] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleOpenModal = () => {
+        setShowModal(true);
+    };
     
     const handleCloseResults = () => {
         setResults([]); // Limpa os resultados
@@ -28,7 +34,14 @@ export const HomePage = () => {
                 <title>Embrapa</title>
             </Head>
 
+            {showModal && <Modal onClose={() => setShowModal(false)} />}
+
             {/* Código Navbar Offcanvas */}
+            {/* Beta */}
+                <div>
+                    <a data-v-b58a293a="" type='button' id="vue-ribbon-40" title="BETA" data-ribbon="BETA" class="vue-ribbon right-top" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={handleOpenModal}>BETA</a>
+                </div>
+            {/* Fim Beta */}
             <nav className="navbar navbar-expand-lg navbar-light bg-white fixed-top" aria-label="Offcanvas navbar large">
                 <div className="container-fluid">
                     <div className="d-flex align-items-center"> 
