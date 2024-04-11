@@ -3,9 +3,9 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.2.0/workbox
 
 // Rota para a API de capítulos
 workbox.routing.registerRoute(
-  new RegExp('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*'),
-  // new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*'),
-  new workbox.strategies.StaleWhileRevalidate({
+  // new RegExp('https://api-cartilha-teste-production.up.railway.app/api/capitulos?populate=*'),
+  new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*'),
+  new workbox.strategies.NetworkFirst({
     cacheName: 'api-capitulos-cache',
   })
 );
@@ -14,44 +14,33 @@ workbox.routing.registerRoute(
 workbox.routing.registerRoute(
   // new RegExp('https://api-cartilha-teste-production.up.railway.app/api/autors'),
   new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/autors?populate=*'),
-  new workbox.strategies.StaleWhileRevalidate({
+  new workbox.strategies.NetworkFirst({
     cacheName: 'api-autores-cache',
   })
 );
 
+// Rota para imagens da API
+workbox.routing.registerRoute(
+  new RegExp('https://tecnofam-strapi.cpao.embrapa.br/strapi/uploads/'), // Altere a expressão regular de acordo com o padrão de URL das suas imagens
+  new workbox.strategies.CacheFirst({
+    cacheName: 'api-images-cache',
+    plugins: [
+      new workbox.cacheableResponse.CacheableResponsePlugin({ statuses: [200] }),
+      new workbox.expiration.ExpirationPlugin({ maxEntries: 50 }), // Limite o número de imagens em cache para evitar uso excessivo de armazenamento
+    ],
+  })
+);
+
+
 self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('/api/capitulos') || event.request.url.includes('/api/autors')) {
     const promiseChain = fetch(event.request.clone())
-      .then((response) => {
-        const responseClone = response.clone();
-        caches.open('api-cache')
-          .then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        return response;
-      })
       .catch(() => {
-        return caches.match(event.request)
-          .then((response) => {
-            if (response) {
-              return response;
-            }
-            return self.registration.sync.register('syncData');
-          });
+        return self.registration.sync.register('syncData');
       });
-    event.respondWith(promiseChain);
+    event.waitUntil(promiseChain);
   }
 });
-
-if (navigator.storage && navigator.storage.persist) {
-  navigator.storage.persist().then(granted => {
-    if (granted) {
-      alert("Armazenamento persistirá e não será limpo");
-    } else {
-      alert("Armazenamento não persistirá e pode ser limpo");
-    }
-  });
-}
 
 self.addEventListener('sync', (event) => {
   if (event.tag === 'syncData') {
