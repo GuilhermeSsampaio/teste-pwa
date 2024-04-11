@@ -6,7 +6,9 @@ export const SearchBar = ({ setResults }) => {
   const [showNoResultsMessage, setShowNoResultsMessage] = useState(false);
 
   const fetchData = (value) => {
-    fetch("https://api-cartilha-teste-production.up.railway.app/api/capitulos")
+    // fetch("https://api-cartilha-teste-production.up.railway.app/api/capitulos")
+    fetch("https://tecnofam-strapi.cpao.embrapa.br/api/capitulos")
+
       .then((response) => response.json())
       .then((data) => {
         const results = data.data.filter((capitulo) => {

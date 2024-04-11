@@ -115,8 +115,8 @@ export const Capitulos = () => {
 
     const CarregaCapitulos = async () => {
         //const url = 'https://tecnofam-strapi.a.cnpgc.embrapa.br/api/capitulos?populate=*';
-        const url = 'https://api-cartilha-teste-production.up.railway.app/api/capitulos?populate=*'
-        // const url = 'https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*';
+        // const url = 'https://api-cartilha-teste-production.up.railway.app/api/capitulos?populate=*'
+        const url = 'https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*';
 
         try {
             const response = await fetch(url);
