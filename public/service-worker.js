@@ -4,6 +4,10 @@ import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { BackgroundSyncPlugin } from 'workbox-background-sync';
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.2.0/workbox-sw.js');
+import { workbox } from 'workbox-sw';
+import { NetworkFirst, BackgroundSyncPlugin, CacheFirst, CacheableResponsePlugin, ExpirationPlugin, StaleWhileRevalidate } from 'workbox-core';
+
 
 registerRoute(
   new RegExp('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*'),
