@@ -3,7 +3,7 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.2.0/workbox
 // Rota para a API de capítulos
 workbox.routing.registerRoute(
   new RegExp('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*'),
-  new workbox.strategies.NetworkFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: 'api-capitulos-cache',
     plugins: [
       new workbox.backgroundSync.BackgroundSyncPlugin('syncDataa', {
@@ -15,7 +15,7 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   new RegExp('https://api-cartilha-teste.onrender.com/api/autors?populate=*'),
-  new workbox.strategies.NetworkFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: 'api-autores-cache',
     plugins: [
       new workbox.backgroundSync.BackgroundSyncPlugin('syncDatab', {
