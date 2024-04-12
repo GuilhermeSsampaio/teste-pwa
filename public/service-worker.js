@@ -1,36 +1,44 @@
-// service-worker.js
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.2.0/workbox-sw.js');
+import { registerRoute } from 'workbox-routing';
+import { NetworkFirst, CacheFirst } from 'workbox-strategies';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
+import { BackgroundSyncPlugin } from 'workbox-background-sync';
 
-// Rota para a API de capítulos
-workbox.routing.registerRoute(
-  // new RegExp('https://api-cartilha-teste-production.up.railway.app/api/capitulos?populate=*'),
+registerRoute(
   new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*'),
-  new workbox.strategies.NetworkFirst({
+  new NetworkFirst({
     cacheName: 'api-capitulos-cache',
+    plugins: [
+      new BackgroundSyncPlugin('syncData', {
+        maxRetentionTime: 24 * 60 // Retry for up to 24 hours (in minutes)
+      })
+    ]
   })
 );
 
-// Rota para a API de autores
-workbox.routing.registerRoute(
-  // new RegExp('https://api-cartilha-teste-production.up.railway.app/api/autors'),
+registerRoute(
   new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/autors?populate=*'),
-  new workbox.strategies.NetworkFirst({
+  new NetworkFirst({
     cacheName: 'api-autores-cache',
+    plugins: [
+      new BackgroundSyncPlugin('syncData', {
+        maxRetentionTime: 24 * 60 // Retry for up to 24 hours (in minutes)
+      })
+    ]
   })
 );
 
-// Rota para imagens da API
-workbox.routing.registerRoute(
-  new RegExp('https://tecnofam-strapi.cpao.embrapa.br/strapi/uploads/'), // Altere a expressão regular de acordo com o padrão de URL das suas imagens
-  new workbox.strategies.CacheFirst({
+registerRoute(
+  new RegExp('https://tecnofam-strapi.cpao.embrapa.br/strapi/uploads/'),
+  new CacheFirst({
     cacheName: 'api-images-cache',
     plugins: [
-      new workbox.cacheableResponse.CacheableResponsePlugin({ statuses: [200] }),
-      new workbox.expiration.ExpirationPlugin({ maxEntries: 50 }), // Limite o número de imagens em cache para evitar uso excessivo de armazenamento
-    ],
+      new CacheableResponsePlugin({ statuses: [200] }),
+      new ExpirationPlugin({ maxEntries: 50 }) // Limite o número de imagens em cache para evitar uso excessivo de armazenamento
+    ]
   })
 );
-
 
 self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('/api/capitulos') || event.request.url.includes('/api/autors')) {
@@ -49,30 +57,29 @@ self.addEventListener('sync', (event) => {
 });
 
 function syncData() {
-  return workbox.precaching.cleanupOutdatedCaches()
+  return cleanupOutdatedCaches()
     .then(() => {
-      return workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+      return precacheAndRoute(self.__WB_MANIFEST);
     });
 }
 
-// Rotas para arquivos estáticos
-workbox.routing.registerRoute(
+registerRoute(
   /\.(?:png|jpg|jpeg|svg|gif|ico|css)$/,
-  new workbox.strategies.CacheFirst({
+  new CacheFirst({
     cacheName: 'static-cache',
   })
 );
 
-// Rota para o arquivo de manifest
-workbox.routing.registerRoute(
+registerRoute(
   /manifest.json$/,
-  new workbox.strategies.StaleWhileRevalidate({
+  new StaleWhileRevalidate({
     cacheName: 'manifest-cache',
   })
 );
 
-// Rota para outras rotas (página principal, etc.)
-workbox.routing.registerRoute(
+registerRoute(
   ({ url }) => url.origin === self.location.origin,
-  new workbox.strategies.StaleWhileRevalidate()
+  new StaleWhileRevalidate()
 );
+
+precacheAndRoute(self.__WB_MANIFEST);

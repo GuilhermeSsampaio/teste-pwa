@@ -28,7 +28,12 @@
     "react-scroll": "^1.8.9",
     "react-scrollspy": "^3.4.3",
     "sharp": "^0.32.5",
-    "swr": "^2.2.0"
+    "swr": "^2.2.0",
+    "workbox-background-sync": "^7.0.0",
+    "workbox-cacheable-response": "^7.0.0",
+    "workbox-expiration": "^7.0.0",
+    "workbox-precaching": "^7.0.0",
+    "workbox-strategies": "^7.0.0"
   },
   "engines": {
     "node": "^14.18.0 || ^16.14.0 || >=18.0.0"
