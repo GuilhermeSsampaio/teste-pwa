@@ -1,15 +1,7 @@
-import { registerRoute } from 'workbox-routing';
-import { NetworkFirst, CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'; // Adicionei StaleWhileRevalidate
-import { CacheableResponsePlugin } from 'workbox-cacheable-response';
-import { ExpirationPlugin } from 'workbox-expiration';
-import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
-import { BackgroundSyncPlugin } from 'workbox-background-sync';
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.2.0/workbox-sw.js');
-import { workbox } from 'workbox-sw';
-import { NetworkFirst, BackgroundSyncPlugin, CacheFirst, CacheableResponsePlugin, ExpirationPlugin, StaleWhileRevalidate } from 'workbox-core';
 
 
-registerRoute(
+workbox.routing.registerRoute(
   new RegExp('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*'),
   new NetworkFirst({
     cacheName: 'api-capitulos-cache',
@@ -21,7 +13,7 @@ registerRoute(
   })
 );
 
-registerRoute(
+workbox.routing.registerRoute(
   new RegExp('https://api-cartilha-teste.onrender.com/api/autors?populate=*'),
   new NetworkFirst({
     cacheName: 'api-autores-cache',
@@ -33,7 +25,7 @@ registerRoute(
   })
 );
 
-registerRoute(
+workbox.routing.registerRoute(
   new RegExp('https://tecnofam-api.cpao.embrapa.br/strapi/upload/'),
   new CacheFirst({
     cacheName: 'api-images-cache',
