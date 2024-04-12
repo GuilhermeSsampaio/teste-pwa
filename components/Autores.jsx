@@ -30,8 +30,20 @@ export const Autores = () => {
         CarregaAutores();
         document.title = 'Embrapa Autores';
     }, []);
-
+    const updateDataLocally = (data) => {
+        localStorage.setItem('autors', JSON.stringify(data));
+    };
     const CarregaAutores = async () => {
+
+        if (!navigator.onLine) {
+            // O usuário está offline, carregue os dados do armazenamento local
+            const storedData = localStorage.getItem('autors');
+            if (storedData) {
+                setData(JSON.parse(storedData));
+                return;
+            }
+        }
+
         //const url = 'https://tecnofam-strapi.a.cnpgc.embrapa.br/api/autors?populate=*';
         const url = 'https://api-cartilha-teste.onrender.com/api/autors?populate=*';
         // const url = 'https://tecnofam-strapi.cpao.embrapa.br/api/autors?populate=*';
@@ -43,11 +55,20 @@ export const Autores = () => {
                 const data = json.data;
                 console.log('API response:', data);
                 setData(data);
+                localStorage.setItem('autors', JSON.stringify(data));
+                updateDataLocally(data);
             } else {
                 throw new Error('Falha na requisição. Código de status: ' + response.status);
             }
         } catch (error) {
             console.error(error);
+            if (!navigator.onLine) {
+                // O usuário está offline, exiba uma mensagem de erro
+                console.log('Você está offline. Verifique sua conexão com a Internet e tente novamente.');
+            } else {
+                // Ocorreu um erro na solicitação à API
+                console.error('Erro ao carregar os dados da API:', error.message);
+            }
         }
     };
     return (

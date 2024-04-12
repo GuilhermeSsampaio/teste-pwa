@@ -1,14 +1,12 @@
 import { registerRoute } from 'workbox-routing';
-import { NetworkFirst, CacheFirst } from 'workbox-strategies';
+import { NetworkFirst, CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'; // Adicionei StaleWhileRevalidate
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { BackgroundSyncPlugin } from 'workbox-background-sync';
 
 registerRoute(
-  // new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*'),
   new RegExp('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*'),
-
   new NetworkFirst({
     cacheName: 'api-capitulos-cache',
     plugins: [
@@ -20,9 +18,7 @@ registerRoute(
 );
 
 registerRoute(
-  // new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/autors?populate=*'),
   new RegExp('https://api-cartilha-teste.onrender.com/api/autors?populate=*'),
-
   new NetworkFirst({
     cacheName: 'api-autores-cache',
     plugins: [

@@ -113,29 +113,47 @@ export const Capitulos = () => {
         return match ? parseInt(match[1]) : null;
     };
 
+    const updateDataLocally = (data) => {
+        localStorage.setItem('capitulos', JSON.stringify(data));
+    };
+
     const CarregaCapitulos = async () => {
+
+        if (!navigator.onLine) {
+            // O usuário está offline, carregue os dados do armazenamento local
+            const storedData = localStorage.getItem('capitulos');
+            if (storedData) {
+                setData(JSON.parse(storedData));
+                return;
+            }
+        }
+
         //const url = 'https://tecnofam-strapi.a.cnpgc.embrapa.br/api/capitulos?populate=*';
         // const url = 'https://api-cartilha-teste-production.up.railway.app/api/capitulos?populate=*'
+    // O usuário está online, faça a solicitação à API
         const url = 'https://api-cartilha-teste.onrender.com/api/capitulos?populate=*';
-
         try {
             const response = await fetch(url);
             if (response.ok) {
                 const json = await response.json();
                 const data = json.data;
                 setData(data);
-                
-                if (asPath.includes('#capitulo_')) {
-                    const chapterNumber = extractChapterNumberFromAnchor(asPath);
-                    setActiveTitle(chapterNumber);
-                } else if (data.length > 0) {
-                    setActiveTitle(data[0].id);
-                }
+                // Armazene os dados no armazenamento local para uso offline
+                localStorage.setItem('capitulos', JSON.stringify(data));
+                updateDataLocally(data);
+
             } else {
                 throw new Error('Falha na requisição. Código de status: ' + response.status);
             }
         } catch (error) {
             console.error(error);
+            if (!navigator.onLine) {
+                // O usuário está offline, exiba uma mensagem de erro
+                console.log('Você está offline. Verifique sua conexão com a Internet e tente novamente.');
+            } else {
+                // Ocorreu um erro na solicitação à API
+                console.error('Erro ao carregar os dados da API:', error.message);
+            }
         }
     };
 
