@@ -20,7 +20,7 @@ registerRoute(
 );
 
 registerRoute(
-  new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/autors?populate=*'),
+  // new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/autors?populate=*'),
   new RegExp('https://api-cartilha-teste.onrender.com/api/autors?populate=*'),
 
   new NetworkFirst({
