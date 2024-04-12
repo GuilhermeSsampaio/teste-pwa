@@ -6,7 +6,9 @@ import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { BackgroundSyncPlugin } from 'workbox-background-sync';
 
 registerRoute(
-  new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*'),
+  // new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/capitulos?populate=*'),
+  new RegExp('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*'),
+
   new NetworkFirst({
     cacheName: 'api-capitulos-cache',
     plugins: [
@@ -19,6 +21,8 @@ registerRoute(
 
 registerRoute(
   new RegExp('https://tecnofam-strapi.cpao.embrapa.br/api/autors?populate=*'),
+  new RegExp('https://api-cartilha-teste.onrender.com/api/autors?populate=*'),
+
   new NetworkFirst({
     cacheName: 'api-autores-cache',
     plugins: [
@@ -30,7 +34,7 @@ registerRoute(
 );
 
 registerRoute(
-  new RegExp('https://tecnofam-strapi.cpao.embrapa.br/strapi/uploads/'),
+  new RegExp('https://tecnofam-api.cpao.embrapa.br/strapi/upload/'),
   new CacheFirst({
     cacheName: 'api-images-cache',
     plugins: [
