@@ -1,12 +1,12 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.2.0/workbox-sw.js');
 
-
+// Rota para a API de capítulos
 workbox.routing.registerRoute(
   new RegExp('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*'),
-  new NetworkFirst({
+  new workbox.strategies.NetworkFirst({
     cacheName: 'api-capitulos-cache',
     plugins: [
-      new BackgroundSyncPlugin('syncData', {
+      new workbox.backgroundSync.BackgroundSyncPlugin('syncDataa', {
         maxRetentionTime: 24 * 60 // Retry for up to 24 hours (in minutes)
       })
     ]
@@ -15,10 +15,10 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   new RegExp('https://api-cartilha-teste.onrender.com/api/autors?populate=*'),
-  new NetworkFirst({
+  new workbox.strategies.NetworkFirst({
     cacheName: 'api-autores-cache',
     plugins: [
-      new BackgroundSyncPlugin('syncData', {
+      new workbox.backgroundSync.BackgroundSyncPlugin('syncDatab', {
         maxRetentionTime: 24 * 60 // Retry for up to 24 hours (in minutes)
       })
     ]
@@ -27,11 +27,11 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   new RegExp('https://tecnofam-api.cpao.embrapa.br/strapi/upload/'),
-  new CacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: 'api-images-cache',
     plugins: [
-      new CacheableResponsePlugin({ statuses: [200] }),
-      new ExpirationPlugin({ maxEntries: 50 }) // Limite o número de imagens em cache para evitar uso excessivo de armazenamento
+      new workbox.cacheableResponse.CacheableResponsePlugin({ statuses: [200] }),
+      new workbox.expiration.ExpirationPlugin({ maxEntries: 50 }) // Limite o número de imagens em cache para evitar uso excessivo de armazenamento
     ]
   })
 );
@@ -53,29 +53,41 @@ self.addEventListener('sync', (event) => {
 });
 
 function syncData() {
-  return cleanupOutdatedCaches()
+  return workbox.precaching.cleanupOutdatedCaches()
     .then(() => {
-      return precacheAndRoute(self.__WB_MANIFEST);
+      return workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
     });
 }
 
-registerRoute(
+// Definição manual do array __WB_MANIFEST
+const manifest = [
+  '/',
+  '/edicao-completa',
+  '/autores'
+  // Adicione mais URLs aqui conforme necessário
+].map(url => ({ url, revision: null }));
+
+workbox.precaching.precacheAndRoute(manifest);
+
+
+// Rotas para arquivos estáticos
+workbox.routing.registerRoute(
   /\.(?:png|jpg|jpeg|svg|gif|ico|css)$/,
-  new CacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: 'static-cache',
   })
 );
 
-registerRoute(
+// Rota para o arquivo de manifesto
+workbox.routing.registerRoute(
   /manifest.json$/,
-  new StaleWhileRevalidate({
+  new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'manifest-cache',
   })
 );
 
-registerRoute(
+// Rota para outras rotas (página principal, etc.)
+workbox.routing.registerRoute(
   ({ url }) => url.origin === self.location.origin,
-  new StaleWhileRevalidate()
+  new workbox.strategies.StaleWhileRevalidate()
 );
-
-precacheAndRoute(self.__WB_MANIFEST);
