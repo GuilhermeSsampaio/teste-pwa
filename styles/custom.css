@@ -9,6 +9,22 @@ body {
     padding-right: 0 !important;
 }
 
+/* esconder banner de install no iphone */
+@supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices */ 
+    .isIos {
+        display: block;
+    }
+}
+
+@supports not (-webkit-touch-callout: none) {
+    /* CSS for other than iOS devices */ 
+    .isIos {
+        display: none;
+    }
+}
+  
+
 /* Beta CSS */
 .modal {
     --mdb-modal-padding: 0 !important;
