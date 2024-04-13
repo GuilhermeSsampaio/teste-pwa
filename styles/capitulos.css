@@ -184,10 +184,7 @@ hr {
 
 /* Estilo Navegação Estrutural */
 .breadcrumbs {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: inline-block;
+  padding-left: 3px;
 }
 
 .breadcrumbs__item {
