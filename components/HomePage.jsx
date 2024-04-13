@@ -8,6 +8,7 @@ import { SearchBar } from "./SearchBar.jsx"
 import { SearchResultsList } from "./SearchResultsList.jsx"
 import { Modal } from './Modal.jsx'
 import { isAndroid, isIOS, isDesktop } from 'react-device-detect'
+import InstallButtonIos from './installButtonIos.jsx'
 
 export const HomePage = () => {
     //Importação das Imagens
@@ -124,7 +125,7 @@ export const HomePage = () => {
                         {/* <a id='btn-instalar' href="#" className='btn'>Instalar</a> */}
                         {isDesktop && <InstallButton />}
                         {isAndroid && <InstallButton />}
-                        {isIOS && <InstallButton />}
+                        {isIOS && <InstallButtonIos />}
                     </div>
                 </div>
             </div>
