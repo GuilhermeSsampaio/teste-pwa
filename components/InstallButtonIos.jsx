@@ -1,17 +1,27 @@
-import React from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
 
 const InstallButtonIos = () => {
+    const [showInstructions, setShowInstructions] = useState(false);
+
+    const showInstallInstructions = () => {
+        setShowInstructions(true);
+    };
+
     return (
-            <div id="instructions">
-                <p>Para instalar este app no seu iPhone:</p>
-                <ol>
-                    <li>Abrir o Safari e navegar para <Link href='https://teste-pwa-rho.vercel.app/'>https://teste-pwa-rho.vercel.app/</Link>.</li>
-                    <li>Tocar no botão de compartilhamento na barra de navegação.</li>
-                    <li>Deslizar e tocar em "Adicionar à Tela de Início".</li>
-                    <li>Confirmar tocando em "Adicionar".</li>
-                </ol>
-            </div>
+        <div>
+            <button onClick={showInstallInstructions}>Adicionar à Tela de Início</button>
+            {showInstructions && (
+                <div id="instructions">
+                    <p>Para instalar este app no seu iPhone:</p>
+                    <ol>
+                        <li>Abrir o Safari e navegar para [URL do seu PWA].</li>
+                        <li>Tocar no botão de compartilhamento na barra de navegação.</li>
+                        <li>Deslizar e tocar em "Adicionar à Tela de Início".</li>
+                        <li>Confirmar tocando em "Adicionar".</li>
+                    </ol>
+                </div>
+            )}
+        </div>
     );
 };
 
