@@ -1,8 +1,8 @@
 import React from 'react';
+import Link from 'next/link';
 
 const InstallButtonIos = () => {
     return (
-        <div className='isIos'>
             <div id="instructions">
                 <p>Para instalar este app no seu iPhone:</p>
                 <ol>
@@ -12,7 +12,6 @@ const InstallButtonIos = () => {
                     <li>Confirmar tocando em "Adicionar".</li>
                 </ol>
             </div>
-        </div>
     );
 };
 
