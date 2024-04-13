@@ -1,6 +1,6 @@
 {
-    "name": "Cartilha embrapa",
-    "short_name": "Cartilha Agricultura ",
+    "name": "TecnofamApp",
+    "short_name": "TecnofamApp",
     "description": "Cartilha da agricultura familiar da embrapa",
     "start_url": "/",
     "display": "standalone",
