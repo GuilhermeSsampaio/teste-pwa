@@ -3,7 +3,6 @@ import React from 'react';
 const InstallButtonIos = () => {
     return (
         <div className='isIos'>
-            <button onClick={() => setShowInstructions(true)}>Adicionar à Tela de Início</button>
             <div id="instructions">
                 <p>Para instalar este app no seu iPhone:</p>
                 <ol>
