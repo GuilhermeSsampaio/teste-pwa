@@ -59,7 +59,7 @@ hr {
   padding: 60px 0;
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
   width: 300px;
-  min-heigth: 100vh
+  min-height: 100vh;
   flex: 0 0 250px; 
   color: #606770;
   font-weight: 600;
