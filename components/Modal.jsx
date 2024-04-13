@@ -3,10 +3,9 @@ export const Modal = () => {
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-scrollable">
                 <div className="modal-content">
-                    <div className="modal-header">
+                    <div className="modal-header" style={{display: 'flex', justifyContent: 'flex-start'}}>
                         <i className="fa fa-exclamation-circle" aria-hidden="true" style={{fontSize: '28px'}}></i>
                         <h1 className="modal-title fs-5 p-2" id="exampleModalLabel" style={{fontWeight: '700'}}>Beta Release</h1>
-                        <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className='modal-body v-application'>
                         <div data-v-b58a293a="" className="v-card__text pt-4 pb-0" style={{textAlign: 'justify'}}>
