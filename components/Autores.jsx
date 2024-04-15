@@ -74,7 +74,7 @@ export const Autores = () => {
     return (
         <>
             <Head>
-                <title>Embrapa</title>
+                <title>TecnofamApp</title>
             </Head>
                 
             {showModal && <Modal onClose={() => setShowModal(false)} />}
