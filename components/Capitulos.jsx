@@ -186,7 +186,7 @@ export const Capitulos = () => {
         <>
             <Head>
                 <meta name="referrer" referrerPolicy="no-referrer" />
-                <title>Embrapa</title>
+                <title>TecnofamApp</title>
             </Head>
             
             {showModal && <Modal onClose={() => setShowModal(false)} />}
