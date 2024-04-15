@@ -36,15 +36,18 @@ workbox.routing.registerRoute(
   })
 );
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('/api/capitulos') || event.request.url.includes('/api/autors')) {
-    const promiseChain = fetch(event.request.clone())
-      .catch(() => {
-        return self.registration.sync.register('syncData');
-      });
-    event.waitUntil(promiseChain);
-  }
-});
+// self.addEventListener('fetch', (event) => {
+//   if (event.request.url.includes('/api/capitulos') || event.request.url.includes('/api/autors')) {
+//     const promiseChain = fetch(event.request.clone())
+//       .catch(() => {
+//         return self.registration.sync.register('syncData');
+//       });
+//     event.waitUntil(promiseChain);
+//   }
+// });
+
+
+
 
 self.addEventListener('sync', (event) => {
   if (event.tag === 'syncData') {
@@ -59,15 +62,79 @@ function syncData() {
     });
 }
 
-// Definição manual do array __WB_MANIFEST
-const manifest = [
-  '/',
-  '/edicao-completa',
-  '/autores'
-  // Adicione mais URLs aqui conforme necessário
-].map(url => ({ url, revision: null }));
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+      caches.open('my-cache-name').then(function(cache) {
+          return cache.addAll([
+            '/',
+            '/edicao-completa',
+            '/autores',
+            '/manifest.json',
+            'https://tecnofam-api.cpao.embrapa.br/strapi/upload/',
+            'https://api-cartilha-teste.onrender.com/api/capitulos?populate=*',
+            'https://api-cartilha-teste.onrender.com/api/autors?populate=*',
 
-workbox.precaching.precacheAndRoute(manifest);
+          ]);
+      })
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+      caches.match(event.request).then(function(response) {
+          return response || fetch(event.request).then(function(response) {
+              let responseClone = response.clone();
+              caches.open('api-capitulos-cache').then(function(cache) {
+                  cache.put(event.request, responseClone);
+              });
+
+              return response;
+          });
+      })
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+      caches.match(event.request).then(function(response) {
+          return response || fetch(event.request).then(function(response) {
+              let responseClone = response.clone();
+              caches.open('api-autores-cache').then(function(cache) {
+                  cache.put(event.request, responseClone);
+              });
+
+              return response;
+          });
+      })
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+      caches.match(event.request).then(function(response) {
+          return response || fetch(event.request).then(function(response) {
+              let responseClone = response.clone();
+              caches.open('api-imagens-cache').then(function(cache) {
+                  cache.put(event.request, responseClone);
+              });
+
+              return response;
+          });
+      })
+  );
+});
+
+
+
+// Definição manual do array __WB_MANIFEST
+// const manifest = [
+//   '/',
+//   '/edicao-completa',
+//   '/autores'
+//   // Adicione mais URLs aqui conforme necessário
+// ].map(url => ({ url, revision: null }));
+
+// workbox.precaching.precacheAndRoute(manifest);
 
 
 // Rotas para arquivos estáticos
@@ -87,7 +154,7 @@ workbox.routing.registerRoute(
 );
 
 // Rota para outras rotas (página principal, etc.)
-workbox.routing.registerRoute(
-  ({ url }) => url.origin === self.location.origin,
-  new workbox.strategies.StaleWhileRevalidate()
-);
+// workbox.routing.registerRoute(
+//   ({ url }) => url.origin === self.location.origin,
+//   new workbox.strategies.StaleWhileRevalidate()
+// );
