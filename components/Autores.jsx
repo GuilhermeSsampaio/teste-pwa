@@ -21,7 +21,7 @@ export const Autores = () => {
     };
 
     const handleCloseResults = () => {
-        setResults([]); // Limpa os resultados
+        setResults([]);
     };
 
     //Fetch para pegar os dados da api Autors criada no Strapi
