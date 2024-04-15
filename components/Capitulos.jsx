@@ -113,49 +113,135 @@ export const Capitulos = () => {
         return match ? parseInt(match[1]) : null;
     };
 
-    const updateDataLocally = (data) => {
-        localStorage.setItem('capitulos', JSON.stringify(data));
+    // const updateDataLocally = (data) => {
+    //     localStorage.setItem('capitulos', JSON.stringify(data));
+    // };
+
+    const abrirBancoDeDados = async () => {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open("meu-banco-de-dados", 1);
+            request.onerror = (event) => {
+                reject(event.target.error);
+            };
+            request.onsuccess = (event) => {
+                resolve(event.target.result);
+            };
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains("capitulos")) {
+                    db.createObjectStore("capitulos", { keyPath: "id" });
+                }
+            };
+        });
     };
+    
+    const updateDataLocally = async (data) => {
+        try {
+            const db = await abrirBancoDeDados();
+            const transaction = db.transaction(["capitulos"], "readwrite");
+            const store = transaction.objectStore("capitulos");
+            data.forEach(item => {
+                store.add(item);
+            });
+        } catch (error) {
+            console.error("Erro ao atualizar dados localmente:", error);
+        }
+    };
+    
+    const obterDadosDoIndexedDB = async () => {
+        try {
+            const db = await abrirBancoDeDados();
+            const transaction = db.transaction(["capitulos"], "readonly");
+            const store = transaction.objectStore("capitulos");
+            const request = store.getAll();
+            return new Promise((resolve, reject) => {
+                request.onsuccess = function(event) {
+                    resolve(event.target.result);
+                };
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        } catch (error) {
+            console.error("Erro ao obter dados do IndexedDB:", error);
+            return [];
+        }
+    };
+    
 
     const CarregaCapitulos = async () => {
 
-        if (!navigator.onLine) {
-            // O usuário está offline, carregue os dados do armazenamento local
-            const storedData = localStorage.getItem('capitulos');
-            if (storedData) {
-                setData(JSON.parse(storedData));
-                return;
-            }
-        }
+    //     if (!navigator.onLine) {
+    //         // O usuário está offline, carregue os dados do armazenamento local
+    //         const storedData = localStorage.getItem('capitulos');
+    //         if (storedData) {
+    //             setData(JSON.parse(storedData));
+    //             return;
+    //         }
+    //     }
 
-        //const url = 'https://tecnofam-strapi.a.cnpgc.embrapa.br/api/capitulos?populate=*';
-        // const url = 'https://api-cartilha-teste-production.up.railway.app/api/capitulos?populate=*'
-    // O usuário está online, faça a solicitação à API
-        const url = 'https://api-cartilha-teste.onrender.com/api/capitulos?populate=*';
-        try {
-            const response = await fetch(url);
-            if (response.ok) {
-                const json = await response.json();
-                const data = json.data;
-                setData(data);
-                // Armazene os dados no armazenamento local para uso offline
-                localStorage.setItem('capitulos', JSON.stringify(data));
-                updateDataLocally(data);
+    //     //const url = 'https://tecnofam-strapi.a.cnpgc.embrapa.br/api/capitulos?populate=*';
+    //     // const url = 'https://api-cartilha-teste-production.up.railway.app/api/capitulos?populate=*'
+    // // O usuário está online, faça a solicitação à API
+    //     const url = 'https://api-cartilha-teste.onrender.com/api/capitulos?populate=*';
+    //     try {
+    //         const response = await fetch(url);
+    //         if (response.ok) {
+    //             const json = await response.json();
+    //             const data = json.data;
+    //             setData(data);
+    //             // Armazene os dados no armazenamento local para uso offline
+    //             localStorage.setItem('capitulos', JSON.stringify(data));
+    //             updateDataLocally(data);
 
-            } else {
-                throw new Error('Falha na requisição. Código de status: ' + response.status);
-            }
-        } catch (error) {
-            console.error(error);
-            if (!navigator.onLine) {
-                // O usuário está offline, exiba uma mensagem de erro
-                console.log('Você está offline. Verifique sua conexão com a Internet e tente novamente.');
-            } else {
-                // Ocorreu um erro na solicitação à API
-                console.error('Erro ao carregar os dados da API:', error.message);
-            }
-        }
+    //         } else {
+    //             throw new Error('Falha na requisição. Código de status: ' + response.status);
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //         if (!navigator.onLine) {
+    //             // O usuário está offline, exiba uma mensagem de erro
+    //             console.log('Você está offline. Verifique sua conexão com a Internet e tente novamente.');
+    //         } else {
+    //             // Ocorreu um erro na solicitação à API
+    //             console.error('Erro ao carregar os dados da API:', error.message);
+    //         }
+    //     }
     };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                let storedData = [];
+                if (!navigator.onLine) {
+                    // O usuário está offline, tenta carregar os dados do IndexedDB
+                    storedData = await obterDadosDoIndexedDB();
+                } else {
+                    // O usuário está online, faz a solicitação à API
+                    const response = await fetch('https://api-cartilha-teste.onrender.com/api/capitulos?populate=*');
+                    if (response.ok) {
+                        const json = await response.json();
+                        storedData = json.data;
+                        // Atualiza os dados no IndexedDB para uso offline
+                        await updateDataLocally(storedData);
+                    } else {
+                        throw new Error('Falha na requisição. Código de status: ' + response.status);
+                    }
+                }
+                setData(storedData);
+            } catch (error) {
+                console.error(error);
+                if (!navigator.onLine) {
+                    // O usuário está offline, exibe uma mensagem de erro
+                    console.log('Você está offline. Verifique sua conexão com a Internet e tente novamente.');
+                } else {
+                    // Ocorreu um erro na solicitação à API
+                    console.error('Erro ao carregar os dados da API:', error.message);
+                }
+            }
+        };
+    
+        fetchData();
+    }, []);
 
     useEffect(() => {
         if (activeTitle === null) {
